@@ -1,0 +1,28 @@
+<div class="container">
+
+  <mat-card class="outer-card">
+
+    <mat-card class="inner-card">
+      <!-- <mat-card class="card-5"> -->
+
+      <mat-card-header>
+        <div mat-card-avatar class="example-header-image"></div>
+        <mat-card-title placeholder="Paper Title">Title: {{paper}}</mat-card-title>
+        <mat-card-subtitle><b><i>Task: {{ task }} </i></b></mat-card-subtitle>
+        <mat-card-subtitle [(ngModel)]="paperRanking" ngDefaultControl><b><i>Global Ranking: {{ paperRanking }} </i></b>
+        </mat-card-subtitle>
+      </mat-card-header>
+
+      <mat-card class="card-6">
+        <mat-card-content class="pdf-container">
+          <pdf-viewer [src]="pdfSrc" [zoom]=zoomValue [render-text]="true" [render-text-mode]="1" [show-all]="true"
+            [zoom]="1" [render-text-mode]="2" [stick-to-page]="true" style="display: block;"
+            (text-layer-rendered)="textLayerRendered($event)"></pdf-viewer>
+        </mat-card-content>
+      </mat-card>
+
+    </mat-card>
+
+  </mat-card>
+
+</div>

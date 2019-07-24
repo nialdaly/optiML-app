@@ -1,0 +1,36 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "theme.scss";
+
+@include mat-core();
+@include angular-material-theme($my-theme);
+
+$default-theme: mat-dark-theme(mat-palette($mat-blue, A400), mat-palette($mat-light-blue, A400));
+@include angular-material-theme($default-theme);
+
+body {
+  margin: 0;
+}
+
+// sets width of left sidenav
+.mat-drawer.mat-drawer-side {
+  width: 300px;
+  height: 100vh;
+  // border: thin solid black;
+}
+
+.mat-list-item {
+  font-size: 14px !important;
+}
+
+.material-icons {
+  font-size: 18px !important;
+}
+
+.mat-select-value-text {
+  font-size: 14px !important;
+}
+
+.mat-card-header .mat-card-title {
+  font-size: 14px !important;
+}
