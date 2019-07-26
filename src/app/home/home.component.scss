@@ -1,66 +1,64 @@
-.container {
-
-  width: 100%;
-  /* border: thin solid yellow; */
-  height: 100vh;
+mat-toolbar {
+  position: relative;
+  max-height: 38px;
+  z-index: 0;
 }
 
-.outer-card {
+.toolbar-gap {
+  flex: 1 1 auto;
+}
+
+.example-icon {
+  padding-bottom: -40px;
+  display: inline-block;
+}
+
+.example-container {
   height: 100vh;
-  border: thin solid #2979ff;
-  margin: 16px;
+  margin: 0px;
+  width: 100%;
+}
+
+/* sidenav */
+.mat-sidenav {
+  width: 25%;
+}
+
+.paper-select-card {
+  margin: 8px;
+}
+
+.upload-paper-card {
+  margin: 8px;
+}
+
+.question-card {
+  margin: 8px;
+}
+
+.zoom-card {
+  margin: 8px;
+}
+
+.zoom-slider {
+  width: 100%;
+}
+
+.main-container {
+  padding: 0px;
+  display: flex;
 }
 
 .inner-card {
-  height: 95vh;
   width: 95%;
-  margin: 10px auto;
-
-  border: thin solid #2979ff;
+  margin: 8px auto;
 }
-
-.mat-elevation-z8 {
-
-  width: 100%;
-  max-height: 100vh;
-  overflow-y: scroll;
-
-}
-
-.container-table {
-  overflow-y: scroll;
-  /* border: thin solid blue; */
-  height: 80%;
-}
-
-.example-header-image {
-  background-image: url('../../assets/pwcode_logo.jpg');
-  background-size: cover;
-}
-
-
-.cardInner {
-  display: grid;
-  grid-template-areas: "header header""side content""footer footer";
-  grid-template-rows: auto auto auto;
-  grid-row-gap: 16px;
-  grid-column-gap: 16px;
-  /* background-color: red; */
-  border: thin solid white;
-}
-
-.mat-form-field {
-  font-size: 14px;
-  width: 100%;
-}
-
-th.mat-sort-header-sorted {
-  color: black;
-}
-
 
 .pdf-container {
+  width: 100%;
+}
+
+.pdf-page {
+  width: 100%;
   border: thin solid red;
-  height: 100vh;
-  overflow-y: scroll;
 }

@@ -1,28 +1,217 @@
-<div class="container">
+<mat-toolbar style="max-height:38px" color="primary">
+  <!-- <mat-toolbar-row> -->
+  <button type="button" aria-label="left toggle sidenav" mat-icon-button (click)="left_drawer.toggle()" color="light">
+    <mat-icon aria-label="left sidenav toggle icon">menu</mat-icon>
+  </button>
+  <span class="gap">optiML - machine learning optimised</span>
+  <span class="toolbar-gap"></span>
 
-  <mat-card class="outer-card">
+  <button type="button" aria-label="right toggle sidenav" mat-icon-button (click)="right_drawer.toggle()" color="light">
+    <mat-icon aria-label="right sidenav toggle icon">view_list</mat-icon>
+  </button>
 
-    <mat-card class="inner-card">
-      <!-- <mat-card class="card-5"> -->
+  <!-- </mat-toolbar-row> -->
+</mat-toolbar>
+<mat-sidenav-container class="example-container">
+  <mat-sidenav #left_drawer mode="side" opened position="start" role="navigation">
 
+    <mat-card class="paper-select-card">
       <mat-card-header>
-        <div mat-card-avatar class="example-header-image"></div>
-        <mat-card-title placeholder="Paper Title">Title: {{paper}}</mat-card-title>
-        <mat-card-subtitle><b><i>Task: {{ task }} </i></b></mat-card-subtitle>
-        <mat-card-subtitle [(ngModel)]="paperRanking" ngDefaultControl><b><i>Global Ranking: {{ paperRanking }} </i></b>
-        </mat-card-subtitle>
+        <mat-card-title>
+          <mat-icon>
+            scatter_plot
+          </mat-icon> 
+          Select Research Paper
+        </mat-card-title>
       </mat-card-header>
 
-      <mat-card class="card-6">
-        <mat-card-content class="pdf-container">
-          <pdf-viewer [src]="pdfSrc" [zoom]=zoomValue [render-text]="true" [render-text-mode]="1" [show-all]="true"
-            [zoom]="1" [render-text-mode]="2" [stick-to-page]="true" style="display: block;"
-            (text-layer-rendered)="textLayerRendered($event)"></pdf-viewer>
-        </mat-card-content>
-      </mat-card>
+      <mat-card-content>
+        <mat-nav-list class="select-paper-list">
+
+          <mat-form-field style="width: 100%">
+            <mat-select placeholder="Select Task" name="task_level"
+              (selectionChange)="taskLevelChangeAction(task_level)" [(ngModel)]="task">
+              <mat-option *ngFor="let task of taskUni" [value]="task">{{ task }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field style="width: 100%">
+            <mat-select placeholder="Select Metric" name="metric_level"
+              (selectionChange)="metricLevelChangeAction(metric_level)" [(ngModel)]="metric">
+              <mat-option *ngFor="let metric of uniqueMetrics" [value]="metric">{{ metric }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field style="width: 100%">
+            <mat-select placeholder="Select Research Paper" name="paper_level"
+              (selectionChange)="paperLevelChangeAction(paper_level)" [(ngModel)]="paper">
+              <mat-option *ngFor="let paper of uniquePapers" [value]="paper">{{ paper }}</mat-option>
+            </mat-select>
+
+          </mat-form-field>
+
+        </mat-nav-list>
+      </mat-card-content>
 
     </mat-card>
 
-  </mat-card>
+    <mat-card class="upload-paper-card">
 
-</div>
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>
+            publish</mat-icon> Upload Research Paper
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-nav-list class="upload-paper-list">
+
+          <mat-form-field style="width: 100%">
+            <input #queryInp matInput id="" type="text" placeholder="Upload URL" [value]="paperURLInput"
+              (input)="paperURLInputChanged($event.target.value)" (keyup.enter)="paperURLInputChanged(queryInp.value)">
+            <button mat-button *ngIf="paperURLInput" matSuffix mat-icon-button aria-label="Clear"
+              (click)="paperURLInput=''">
+              <mat-icon>close</mat-icon>
+            </button>
+          </mat-form-field>
+
+        </mat-nav-list>
+
+      </mat-card-content>
+
+
+    </mat-card>
+
+    <mat-card class="question-card" class.mat-elevation-z24>
+
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>
+            question_answer</mat-icon> Question Research Paper
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <mat-nav-list class="question-paper-list">
+
+          <mat-form-field style="width: 100%">
+            <input #queryInp matInput id="question1" type="text" placeholder="Ask a question" [value]="question1Value"
+              (input)="q1QueryChanged($event.target.value)" (keyup.enter)="q1QueryChanged(queryInp.value)">
+            <button mat-button *ngIf="question1Value" matSuffix mat-icon-button aria-label="Clear"
+              (click)="question1Value=''">
+              <mat-icon>close</mat-icon>
+            </button>
+
+          </mat-form-field>
+
+          <p>{{question1Answer}}</p>
+
+        </mat-nav-list>
+
+      </mat-card-content>
+
+    </mat-card>
+
+    <mat-card class="zoom-card" class.mat-elevation-z24>
+
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>
+            zoom_in</mat-icon> Adjust Paper Zoom
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+        <mat-slider class="zoom-slider" [disabled]="disabled" [invert]="invert" [max]="maxZoom" [min]="minZoom"
+          [step]="step" [thumbLabel]="thumbLabel" [tickInterval]="tickInterval" [(ngModel)]="zoomValue"
+          [vertical]="vertical">
+        </mat-slider>
+      </mat-card-content>
+
+    </mat-card>
+
+  </mat-sidenav>
+
+  <mat-sidenav-content>
+
+    <div class="main-container">
+
+      <mat-card class="inner-card">
+        <!-- <mat-card class="card-5"> -->
+
+        <mat-card-header>
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title placeholder="Paper Title">
+
+            <span>
+              <mat-icon class="example-icon" aria-hidden="false" aria-label="Example user verified icon">subject
+              </mat-icon>
+              {{paper}}
+            </span>
+
+          </mat-card-title>
+          <mat-card-subtitle [(ngModel)]="paperRanking" ngDefaultControl><b><i>Global Ranking: {{ paperRanking }}
+              </i></b>
+          </mat-card-subtitle>
+
+        </mat-card-header>
+
+        <mat-card class="card-6">
+          <mat-card-content class="pdf-container">
+            <pdf-viewer class="pdf_page" [src]="pdfSrc" [zoom]=zoomValue [render-text]="true" [fit-to-page]="false"
+              [render-text-mode]="1" [show-all]="true" 
+              [zoom]="1" [render-text-mode]="2" [stick-to-page]="false"
+              style="display: block;" (text-layer-rendered)="textLayerRendered($event)"></pdf-viewer>
+          </mat-card-content>
+        </mat-card>
+
+      </mat-card>
+
+    </div>
+
+    <!-- <router-outlet></router-outlet> -->
+  </mat-sidenav-content>
+
+  <mat-sidenav #right_drawer mode="side" closed position="end" role="navigation">
+
+    <mat-card class="paper-select-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>
+            view_list</mat-icon> Paper Metadata
+        </mat-card-title>
+      </mat-card-header>
+
+      <mat-card-content>
+
+        <table mat-table [dataSource]="metaDataSource" class="mat-elevation-z8" style="width: 100%;">
+
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="metadata">
+            <th mat-header-cell *matHeaderCellDef> Metadata </th>
+            <td mat-cell *matCellDef="let element"> {{element.metadata}} </td>
+          </ng-container>
+
+          <!-- Weight Column -->
+          <ng-container matColumnDef="result">
+            <th mat-header-cell *matHeaderCellDef> Result </th>
+            <td mat-cell *matCellDef="let element"> {{element.result}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+      </mat-card-content>
+
+    </mat-card>
+
+
+  </mat-sidenav>
+
+
+</mat-sidenav-container>

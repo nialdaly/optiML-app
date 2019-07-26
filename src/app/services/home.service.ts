@@ -1,9 +1,10 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import { Home, Tasks, Metrics } from '../models/home.model';
+import { map, catchError, tap } from 'rxjs/operators';
 
 
 const endpoint = 'http://127.0.0.1:5000/api/run_pred/';
@@ -18,10 +19,8 @@ const httpOptions = {
 @Injectable()
 export class HomeService {
 
-  // private serviceUrl = '../../assets/data/temp_model_data.json';
-  // private serviceUrl = 'https://cors-anywhere.herokuapp.com/https://still-dawn-14885.herokuapp.com/model_data';
-
   private serviceUrl = '../../assets/data/temp_model_data.json';
+  // private serviceUrl = 'https://cors-anywhere.herokuapp.com/https://still-dawn-14885.herokuapp.com/api/data';
 
 
   constructor(private http: HttpClient) { }
@@ -63,6 +62,7 @@ export class HomeService {
       }
 
     );
+
   }
-  
+
 }

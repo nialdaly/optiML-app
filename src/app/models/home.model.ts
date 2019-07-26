@@ -1,14 +1,11 @@
 export interface Home {
-    // data_id: number;
     dataset: string;
-    // extradata: string;
     global_rank: string,
     metric_name: string;
     metric_value: string;
     model_name: string;
     task: string;
     paper_title: string;
-    // paper_path: string;
     paper_url: string;
 }
 
@@ -18,6 +15,10 @@ export interface Tasks {
 
 export interface Metrics {
     metric_name: string;
+}
+
+export interface Models {
+    model_name: string;
 }
 
 export interface MetaDataTable {
