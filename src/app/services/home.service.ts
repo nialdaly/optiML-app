@@ -7,8 +7,8 @@ import { PaperData, QAData, ParserData } from '../models/home.model';
 
 @Injectable()
 export class HomeService {
-  private pwcodeDataAPI = '../../assets/data/temp_model_data.json';
   // private pwcodeDataAPI = 'https://cors-anywhere.herokuapp.com/https://still-dawn-14885.herokuapp.com/api/data';
+  private pwcodeDataAPI = '../../assets/data/temp_model_data_2.json';
   private qaAPI = 'http://127.0.0.1:5000/api/get_answer/';
   private parsePaperAPI = 'http://127.0.0.1:5000/api/parse_text/';
 
@@ -29,8 +29,7 @@ export class HomeService {
   }
 
   getPDFText(paperURL: string) {
-    return this.http.post<ParserData[]>(this.parsePaperAPI,
-      {
+    return this.http.post<ParserData[]>(this.parsePaperAPI, {
         "parsed_text": {
           "paper_url": paperURL
         }

@@ -129,11 +129,6 @@ export class HomeComponent implements OnInit {
         this.homeService.getPDFText(this.pdfSrc).subscribe(response => {
 
             this.pdfText = response as ParserData[]
-
-            console.log(this.pdfText)
-            // return this.pdfText = JSON.stringify(resText.input);
-            // this.pdfText = JSON.stringify(resText.input);
-
             this.homeService.getAnswer(this.pdfText, this.lrateQuestion).subscribe(response => { this.lrateAnswer = response as QAData[] });
             this.homeService.getAnswer(this.pdfText, this.momentumQuestion).subscribe(response => { this.momentumAnswer = response as QAData[] });
             this.homeService.getAnswer(this.pdfText, this.epochsQuestion).subscribe(response => { this.epochsAnswer = response as QAData[] });

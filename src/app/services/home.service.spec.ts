@@ -5,7 +5,6 @@ import 'rxjs/add/operator/map';
 import { PaperData, QAData } from '../models/home.model';
 @Injectable()
 export class HomeService {
-  // private serviceUrl = 'https://jsonplaceholder.typicode.com/users';
   private serviceUrl = 'http://127.0.0.1:5000/';
   
   constructor(private http: HttpClient) { }
