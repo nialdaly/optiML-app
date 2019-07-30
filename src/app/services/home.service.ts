@@ -1,68 +1,40 @@
 
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { Home, Tasks, Metrics } from '../models/home.model';
-import { map, catchError, tap } from 'rxjs/operators';
-
-
-const endpoint = 'http://127.0.0.1:5000/api/run_pred/';
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type': 'application/json'
-  })
-};
-
+import { PaperData, QAData, ParserData } from '../models/home.model';
 
 @Injectable()
 export class HomeService {
-
-  private serviceUrl = '../../assets/data/temp_model_data.json';
-  // private serviceUrl = 'https://cors-anywhere.herokuapp.com/https://still-dawn-14885.herokuapp.com/api/data';
+  private pwcodeDataAPI = '../../assets/data/temp_model_data.json';
+  // private pwcodeDataAPI = 'https://cors-anywhere.herokuapp.com/https://still-dawn-14885.herokuapp.com/api/data';
+  private qaAPI = 'http://127.0.0.1:5000/api/get_answer/';
+  private parsePaperAPI = 'http://127.0.0.1:5000/api/parse_text/';
 
 
   constructor(private http: HttpClient) { }
 
-  getHome(): Observable<Home[]> {
-    return this.http.get<Home[]>(this.serviceUrl);
+  getPaperData(): Observable<PaperData[]> {
+    return this.http.get<PaperData[]>(this.pwcodeDataAPI);
   }
 
-  getTasks(): Observable<Tasks[]> {
-    return this.http.get<Tasks[]>(this.serviceUrl);
+  getAnswer(context: string, question: string) {
+    return this.http.post<QAData[]>(this.qaAPI, {
+      "answer": {
+        "context": context,
+        "question": question
+      }
+    }).map((response: any) => response.answer)
   }
 
-  getAnswer(contextInput: string, questionInput: string): Observable<any> {
-
-    return this.http.post('http://127.0.0.1:5000/api/run_pred/',
+  getPDFText(paperURL: string) {
+    return this.http.post<ParserData[]>(this.parsePaperAPI,
       {
-
-        "input": {
-
-          "context": contextInput,
-          "question": questionInput
-
+        "parsed_text": {
+          "paper_url": paperURL
         }
-      }
-
-    );
-  };
-
-  getPDFText(urlInput: string): Observable<any> {
-
-    return this.http.post('http://127.0.0.1:5000/api/parse_text/',
-      {
-
-        "input": {
-
-          "urlInput": urlInput
-
-        }
-      }
-
-    );
-
+      }).map((response: any) => response.parsed_text)
   }
 
 }

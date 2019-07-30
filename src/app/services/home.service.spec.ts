@@ -2,7 +2,7 @@ import { Injectable }   from '@angular/core';
 import { HttpClient }   from '@angular/common/http';
 import { Observable }   from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
-import { Home } from '../models/home.model';
+import { PaperData, QAData } from '../models/home.model';
 @Injectable()
 export class HomeService {
   // private serviceUrl = 'https://jsonplaceholder.typicode.com/users';
@@ -10,7 +10,7 @@ export class HomeService {
   
   constructor(private http: HttpClient) { }
   
-  getUser(): Observable<Home[]> {
-    return this.http.get<Home[]>(this.serviceUrl);
+  getUser(): Observable<PaperData[]> {
+    return this.http.get<PaperData[]>(this.serviceUrl);
   }
 }

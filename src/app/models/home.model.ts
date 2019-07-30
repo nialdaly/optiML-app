@@ -1,4 +1,4 @@
-export interface Home {
+export interface PaperData {
     dataset: string;
     global_rank: string,
     metric_name: string;
@@ -9,19 +9,16 @@ export interface Home {
     paper_url: string;
 }
 
-export interface Tasks {
-    task: string;
+export interface QAData {
+    answer: string;
 }
 
-export interface Metrics {
-    metric_name: string;
-}
-
-export interface Models {
-    model_name: string;
+export interface ParserData {
+    parsed_text: string;
 }
 
 export interface MetaDataTable {
-    metadata: string;
-    result: any;
+    metadata_name: string;
+    metadata_value: any;
 }
+

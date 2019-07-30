@@ -1,8 +1,8 @@
-import { Component, Output, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HomeService } from '../services/home.service';
 import { PdfViewerComponent } from 'ng2-pdf-viewer';
 import 'rxjs/add/observable/of';
-import { Home, MetaDataTable } from '../models/home.model';
+import { PaperData, QAData, ParserData, MetaDataTable } from '../models/home.model';
 
 
 @Component({
@@ -14,81 +14,32 @@ export class HomeComponent implements OnInit {
 
     @ViewChild(PdfViewerComponent) public pdfComponent: PdfViewerComponent;
 
-    autoTicks = false;
-    disabled = false;
-    invert = false;
-    maxZoom = 1.1;
-    minZoom = 0.8;
-    showTicks = false;
-    step = 0.05;
-    thumbLabel = false;
-    zoomValue = 1;
-    vertical = false;
+    autoTicks = false; disabled = false; invert = false; maxZoom = 1.1;
+    minZoom = 0.8; showTicks = false; step = 0.05;
+    thumbLabel = false; zoomValue = 1; vertical = false;
+    paperData: any; paperURL: any;
+    uniqueTasks: any; uniqueMetrics: any; uniquePapers: any;
+    task; metric; paper; dataByTask: any;
+    pdfSrc: string = ''; paperRanking: string; pdfURLSrc: string = '';
 
+    // pdfURLText: string = ''; pdfQuery = '';
 
-    task_level: string;
-    task;
-
-    metric_level: string;
-    metric;
-
-    paper_level: string;
-    paper;
-
-
-    dataByTask: any;
-
-    uniqueMetrics: any;
-
-    uniquePapers: any;
-
-    paperData: any;
-
-    paperURL: any;
-
-    taskUni: any;
-
-    pdfSrc: string = '';
-
-    pdfText: string = '';
-
-
-    paperRanking: string;
-    pdfQuery = '';
-
-
-    modelData: any;
-
-    question1Value = "";
+    modelData: any; question = "";
 
     // metadata
-    question1Response: any;
-    question1Answer: string = "";
-
-    modelName: string;
-    metricValue: string;
-    datasetQuestion: string = "what dataset";
-    datasetQuestionAnswer: string = "";
-    batchSizeQuestion: string = "what is the batch size";
-    batchSizeQuestionAnswer: string = "";
-    lrateQuestion: string = "what learning rate?";
-    lrateQuestionAnswer: string = "";
-    momentumQuestion: string = "what momentum?";
-    momentumQuestionAnswer: string = "";
-    epochsQuestion: string = "what epochs?";
-    epochsQuestionAnswer: string = "";
-
-
-
-    paperURLInput: string = "";
-
-    pdfTextURL: string = ""
+    pdfText: any = '';
+    answer: any = ""; modelName: string; metricValue: string;
+    datasetQuestion: string = "what dataset"; datasetAnswer: any = "";
+    batchSizeQuestion: string = "what is the batch size"; batchSizeAnswer: any = "";
+    lrateQuestion: string = "what learning rate?"; lrateAnswer: any = "";
+    momentumQuestion: string = "what momentum?"; momentumAnswer: any = "";
+    epochsQuestion: string = "what epochs?"; epochsAnswer: any = "";
+    paperURLInput: string = ""; pdfTextURL: string = ""
 
 
     metaDataSource: any;
     META_DATA: MetaDataTable[]
-    displayedColumns: string[] = ['metadata', 'result'];
-
+    displayedColumns: string[] = ['metadata_name', 'metadata_value'];
 
 
     constructor(private homeService: HomeService) {
@@ -96,33 +47,18 @@ export class HomeComponent implements OnInit {
 
     ngOnInit() {
         this.getAllData();
-        this.getAllOwners();
-
-        // sets default
-        this.task = "Scene Text Detection";
-        this.metric = "F-Measure";
-        this.paper = "Detecting Oriented Text in Natural Images by Linking Segments";
-        this.pdfSrc = "https://arxiv.org/pdf/1703.06520v3.pdf";
-    }
-
-    public getAllOwners = () => {
-        // this.firstService.getData('https://jsonplaceholder.typicode.com/users')
-        this.homeService.getHome()
-            .subscribe(res => {
-                this.modelData = res as Home[];
-                this.taskUni = Array.from(new Set(this.modelData.map((itemInArray) => itemInArray.task)))
-                this.taskUni = this.taskUni.sort();
-            })
     }
 
     public getAllData = () => {
-        this.homeService
-            .getTasks().subscribe((res: Home[]) => {
-                this.modelData = res;
-            })
+        this.homeService.getPaperData()
+            .subscribe(res => {
+                this.modelData = res as PaperData[];
+                this.uniqueTasks = Array.from(new Set(this.modelData.map((itemInArray) => itemInArray.task)))
+                this.uniqueTasks = this.uniqueTasks.sort();
+            });
     }
 
-    taskLevelChangeAction(task, modelData) {
+    taskChange(task, modelData) {
         function taskFilter(taskName, modelData) {
             return modelData.filter(object => {
                 return object['task'] == taskName;
@@ -134,7 +70,7 @@ export class HomeComponent implements OnInit {
         this.metricValue = this.dataByTask[0].metric_value;
     }
 
-    metricLevelChangeAction(metric, modelData) {
+    metricChange(metric, modelData) {
         function paperFilter(taskName, metricName, modelData) {
             return modelData.filter(object => {
                 return object['task'] == taskName && object['metric_name'] == metricName;
@@ -144,7 +80,7 @@ export class HomeComponent implements OnInit {
         this.uniquePapers = Array.from(new Set(this.paperData.map((itemInArray) => itemInArray.paper_title)));
     }
 
-    paperLevelChangeAction(paper, modelData) {
+    paperChange(paper, modelData) {
         function paperURLFilter(taskName, metricName, paperName, modelData) {
             return modelData.filter(object => {
                 return object['task'] == taskName && object['metric_name'] == metricName && object['paper_title'] == paperName;
@@ -156,42 +92,21 @@ export class HomeComponent implements OnInit {
         this.pdfText = this.paperURL[0].paper_text
         this.paperRanking = this.paperURL[0].global_rank
 
-
-
-        this.homeService.getAnswer(this.pdfText, this.datasetQuestion).subscribe((datasetRes: any) => {
-            return this.datasetQuestionAnswer = JSON.stringify(datasetRes.input);
-        })
-
-        this.homeService.getAnswer(this.pdfText, this.lrateQuestion).subscribe((lrateRes: any) => {
-            return this.lrateQuestionAnswer = JSON.stringify(lrateRes.input);
-        })
-
-        this.homeService.getAnswer(this.pdfText, this.momentumQuestion).subscribe((momentumRes: any) => {
-            return this.momentumQuestionAnswer = JSON.stringify(momentumRes.input);
-        })
-
-        this.homeService.getAnswer(this.pdfText, this.epochsQuestion).subscribe((epochsRes: any) => {
-            return this.epochsQuestionAnswer = JSON.stringify(epochsRes.input);
-        })
-
-        this.homeService.getAnswer(this.pdfText, this.batchSizeQuestion).subscribe((batchSizeRes: any) => {
-            return this.batchSizeQuestionAnswer = JSON.stringify(batchSizeRes.input);
-        })
-
+        this.homeService.getAnswer(this.pdfText, this.datasetQuestion).subscribe(res => { this.datasetAnswer = res as QAData[] });
+        this.homeService.getAnswer(this.pdfText, this.lrateQuestion).subscribe(res => { this.lrateAnswer = res as QAData[] });
+        this.homeService.getAnswer(this.pdfText, this.momentumQuestion).subscribe(res => { this.momentumAnswer = res as QAData[] });
+        this.homeService.getAnswer(this.pdfText, this.epochsQuestion).subscribe(res => { this.epochsAnswer = res as QAData[] });
+        this.homeService.getAnswer(this.pdfText, this.batchSizeQuestion).subscribe(res => { this.batchSizeAnswer = res as QAData[] });
 
         // automatic metadata table
         this.META_DATA = [
-            { metadata: 'Model', result: this.modelName },
-            { metadata: 'Metric', result: this.metric },
-            { metadata: 'Model Result', result: this.metricValue },
-            { metadata: 'Learning Rate', result: this.lrateQuestionAnswer },
-            { metadata: 'Batch Size', result: this.batchSizeQuestionAnswer },
-            { metadata: 'Momentum', result: this.momentumQuestionAnswer },
-            { metadata: 'Epochs', result: this.epochsQuestionAnswer }
+            { metadata_name: 'Model', metadata_value: this.modelName }, { metadata_name: 'Metric', metadata_value: this.metric },
+            { metadata_name: 'Model Result', metadata_value: this.metricValue }, { metadata_name: 'Learning Rate', metadata_value: this.lrateAnswer },
+            { metadata_name: 'Batch Size', metadata_value: this.batchSizeAnswer }, { metadata_name: 'Momentum', metadata_value: this.momentumAnswer },
+            { metadata_name: 'Epochs', metadata_value: this.epochsAnswer }
         ];
 
         this.metaDataSource = this.META_DATA;
-
     }
 
 
@@ -204,42 +119,54 @@ export class HomeComponent implements OnInit {
         // console.log('(page-rendered)', e);
     }
 
+    paperURLChanged(newPaperURL: string) {
 
-    paperURLInputChanged(newPaperURL: string) {
-        if (newPaperURL !== this.paperURLInput) {
-            this.paperURLInput = newPaperURL;
-            this.pdfSrc = this.paperURLInput;
+        this.paperURLInput = newPaperURL;
+        this.pdfSrc = this.paperURLInput;
 
-            this.homeService.getPDFText(this.pdfSrc).subscribe((resText: any) => {
-                // return this.pdfText = JSON.stringify(resText.input);
-                this.pdfText = JSON.stringify(resText.input);
-            })
+        this.pdfText = "";
 
-            this.paper = "";
-            this.paperRanking = "";
+        this.homeService.getPDFText(this.pdfSrc).subscribe(response => {
 
-        }
-        else {
-            this.paperURLInput = this.paperURLInput;
-        }
+            this.pdfText = response as ParserData[]
 
+            console.log(this.pdfText)
+            // return this.pdfText = JSON.stringify(resText.input);
+            // this.pdfText = JSON.stringify(resText.input);
+
+            this.homeService.getAnswer(this.pdfText, this.lrateQuestion).subscribe(response => { this.lrateAnswer = response as QAData[] });
+            this.homeService.getAnswer(this.pdfText, this.momentumQuestion).subscribe(response => { this.momentumAnswer = response as QAData[] });
+            this.homeService.getAnswer(this.pdfText, this.epochsQuestion).subscribe(response => { this.epochsAnswer = response as QAData[] });
+            this.homeService.getAnswer(this.pdfText, this.batchSizeQuestion).subscribe(response => { this.batchSizeAnswer = response as QAData[] });
+
+            // automatic metadata table
+            this.META_DATA = [
+                { metadata_name: 'Learning Rate', metadata_value: this.lrateAnswer }, { metadata_name: 'Batch Size', metadata_value: this.batchSizeAnswer },
+                { metadata_name: 'Momentum', metadata_value: this.momentumAnswer }, { metadata_name: 'Epochs', metadata_value: this.epochsAnswer }
+            ];
+
+            this.metaDataSource = this.META_DATA;
+
+        })
     }
 
-    q1QueryChanged(newQuery: string) {
-        if (newQuery !== this.question1Value) {
-            this.question1Value = newQuery;
+    paperQueryChanged(newQuery: string) {
+        if (newQuery !== this.question) {
+            this.question = newQuery;
 
-            this.homeService.getAnswer(this.pdfText, this.question1Value).subscribe((resx: any) => {
-                return this.question1Answer = JSON.stringify(resx.input);
-            })
+            this.homeService.getAnswer(this.pdfText, this.question)
+                .subscribe(res => {
+                    this.answer = res as QAData[];
+                });
 
             this.pdfComponent.pdfFindController.executeCommand('find', {
-                query: this.question1Answer,
+                query: this.answer,
                 highlightAll: true
             });
+
         } else {
             this.pdfComponent.pdfFindController.executeCommand('findagain', {
-                query: this.question1Answer,
+                query: this.answer,
                 highlightAll: true
             });
         }
@@ -254,7 +181,6 @@ export class HomeComponent implements OnInit {
     }
 
     textLayerRendered(e: CustomEvent) {
-        // console.log('(text-layer-rendered)', e);
     }
 
 }

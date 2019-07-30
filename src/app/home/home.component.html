@@ -3,7 +3,7 @@
   <button type="button" aria-label="left toggle sidenav" mat-icon-button (click)="left_drawer.toggle()" color="light">
     <mat-icon aria-label="left sidenav toggle icon">menu</mat-icon>
   </button>
-  <span class="gap">optiML - machine learning optimised</span>
+  <!-- <span class="gap">optiML - machine learning optimised</span> -->
   <span class="toolbar-gap"></span>
 
   <button type="button" aria-label="right toggle sidenav" mat-icon-button (click)="right_drawer.toggle()" color="light">
@@ -20,7 +20,7 @@
         <mat-card-title>
           <mat-icon>
             scatter_plot
-          </mat-icon> 
+          </mat-icon>
           Select Research Paper
         </mat-card-title>
       </mat-card-header>
@@ -29,22 +29,20 @@
         <mat-nav-list class="select-paper-list">
 
           <mat-form-field style="width: 100%">
-            <mat-select placeholder="Select Task" name="task_level"
-              (selectionChange)="taskLevelChangeAction(task_level)" [(ngModel)]="task">
-              <mat-option *ngFor="let task of taskUni" [value]="task">{{ task }}</mat-option>
+            <mat-select placeholder="Select Task" (selectionChange)="taskChange(task_selection)" [(ngModel)]="task">
+              <mat-option *ngFor="let task of uniqueTasks" [value]="task">{{ task }}</mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field style="width: 100%">
-            <mat-select placeholder="Select Metric" name="metric_level"
-              (selectionChange)="metricLevelChangeAction(metric_level)" [(ngModel)]="metric">
+            <mat-select placeholder="Select Metric" (selectionChange)="metricChange(metric_level)" [(ngModel)]="metric">
               <mat-option *ngFor="let metric of uniqueMetrics" [value]="metric">{{ metric }}</mat-option>
             </mat-select>
           </mat-form-field>
 
           <mat-form-field style="width: 100%">
-            <mat-select placeholder="Select Research Paper" name="paper_level"
-              (selectionChange)="paperLevelChangeAction(paper_level)" [(ngModel)]="paper">
+            <mat-select placeholder="Select Research Paper" (selectionChange)="paperChange(paper_level)"
+              [(ngModel)]="paper">
               <mat-option *ngFor="let paper of uniquePapers" [value]="paper">{{ paper }}</mat-option>
             </mat-select>
 
@@ -70,7 +68,7 @@
 
           <mat-form-field style="width: 100%">
             <input #queryInp matInput id="" type="text" placeholder="Upload URL" [value]="paperURLInput"
-              (input)="paperURLInputChanged($event.target.value)" (keyup.enter)="paperURLInputChanged(queryInp.value)">
+              (input)="paperURLChanged($event.target.value)" (keyup.enter)="paperURLChanged(queryInp.value)">
             <button mat-button *ngIf="paperURLInput" matSuffix mat-icon-button aria-label="Clear"
               (click)="paperURLInput=''">
               <mat-icon>close</mat-icon>
@@ -98,16 +96,16 @@
         <mat-nav-list class="question-paper-list">
 
           <mat-form-field style="width: 100%">
-            <input #queryInp matInput id="question1" type="text" placeholder="Ask a question" [value]="question1Value"
-              (input)="q1QueryChanged($event.target.value)" (keyup.enter)="q1QueryChanged(queryInp.value)">
-            <button mat-button *ngIf="question1Value" matSuffix mat-icon-button aria-label="Clear"
-              (click)="question1Value=''">
+            <input #queryInp matInput id="question" type="text" placeholder="Ask a question" [value]="question"
+              (input)="paperQueryChanged($event.target.value)" (keyup.enter)="paperQueryChanged(queryInp.value)">
+            <button mat-button *ngIf="question" matSuffix mat-icon-button aria-label="Clear"
+              (click)="question=''">
               <mat-icon>close</mat-icon>
             </button>
 
           </mat-form-field>
 
-          <p>{{question1Answer}}</p>
+          <p>{{answer}}</p>
 
         </mat-nav-list>
 
@@ -162,8 +160,7 @@
         <mat-card class="card-6">
           <mat-card-content class="pdf-container">
             <pdf-viewer class="pdf_page" [src]="pdfSrc" [zoom]=zoomValue [render-text]="true" [fit-to-page]="false"
-              [render-text-mode]="1" [show-all]="true" 
-              [zoom]="1" [render-text-mode]="2" [stick-to-page]="false"
+              [render-text-mode]="1" [show-all]="true" [zoom]="1" [render-text-mode]="2" [stick-to-page]="false"
               style="display: block;" (text-layer-rendered)="textLayerRendered($event)"></pdf-viewer>
           </mat-card-content>
         </mat-card>
@@ -186,30 +183,23 @@
       </mat-card-header>
 
       <mat-card-content>
-
         <table mat-table [dataSource]="metaDataSource" class="mat-elevation-z8" style="width: 100%;">
-
-
-          <!-- Name Column -->
-          <ng-container matColumnDef="metadata">
+          <!-- Metadata Name Column -->
+          <ng-container matColumnDef="metadata_name">
             <th mat-header-cell *matHeaderCellDef> Metadata </th>
-            <td mat-cell *matCellDef="let element"> {{element.metadata}} </td>
+            <td mat-cell *matCellDef="let element"> {{element.metadata_name}} </td>
           </ng-container>
-
-          <!-- Weight Column -->
-          <ng-container matColumnDef="result">
-            <th mat-header-cell *matHeaderCellDef> Result </th>
-            <td mat-cell *matCellDef="let element"> {{element.result}} </td>
+          <!-- Metadata Value Column -->
+          <ng-container matColumnDef="metadata_value">
+            <th mat-header-cell *matHeaderCellDef> Value </th>
+            <td mat-cell *matCellDef="let element"> {{element.metadata_value}} </td>
           </ng-container>
-
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-
       </mat-card-content>
 
     </mat-card>
-
 
   </mat-sidenav>
 
