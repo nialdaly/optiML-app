@@ -25,6 +25,11 @@ export class HomeComponent implements OnInit {
     // pdfURLText: string = ''; pdfQuery = '';
 
     modelData: any; question = "";
+    paperURLInputCors: string = "";
+
+    corsExtension: string = "https://cors-anywhere.herokuapp.com/";
+
+    // var res = str1.concat(str2);"
 
     // metadata
     pdfText: any = '';
@@ -122,7 +127,11 @@ export class HomeComponent implements OnInit {
     paperURLChanged(newPaperURL: string) {
 
         this.paperURLInput = newPaperURL;
-        this.pdfSrc = this.paperURLInput;
+        this.paperURLInputCors = this.corsExtension.concat(this.paperURLInput);
+
+        this.pdfSrc = this.paperURLInputCors;
+
+        this.paper = "New Research Paper Uploaded";
 
         this.pdfText = "";
 
