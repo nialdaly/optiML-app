@@ -1,4 +1,2 @@
 # optiML-app
-
-## Overview
-Angular-based single page application (SPA) for rendering and interrogating academic research papers using BERT.
+Angular single page application (SPA) for automating metadata extraction from academic research papers using BERT.
